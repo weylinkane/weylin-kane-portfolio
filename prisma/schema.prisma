@@ -1,0 +1,39 @@
+// Prisma schema for Weylin Kane Portfolio
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Trade = an immutable record of a single buy or sell
+// Think of this as the bank statement: every transaction lives here permanently.
+model Trade {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  ticker    String
+  company   String?
+  type      String   // "BUY" or "SELL"
+  shares    Float
+  price     Float
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Holding = your current snapshot of what you own.
+// In V1, you maintain currentPrice manually via the Admin page.
+// (V2 could fetch live prices from a stock API.)
+model Holding {
+  id           Int      @id @default(autoincrement())
+  ticker       String   @unique
+  company      String
+  shares       Float
+  avgCost      Float
+  currentPrice Float
+  updatedAt    DateTime @updatedAt
+}
